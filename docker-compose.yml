@@ -1,0 +1,17 @@
+services:
+  mysql:
+    container_name: contactsinfo
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: oracle
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: alesar.contactsinfo
+    ports:
+      - "3307:3306"
+
+networks:
+  mysql:
+    driver: bridge
+
+volumes:
+  mysql:
