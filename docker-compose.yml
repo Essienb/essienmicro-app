@@ -1,13 +1,17 @@
+version: '3.1'
+
 services:
-  mysql:
+  alesar_db:
     container_name: contactsinfo
-    image: mysql
+    image: mysql:latest
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: oracle
-      MYSQL_ROOT_USER: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: oracle
       MYSQL_DATABASE: alesar.contactsinfo
     ports:
-      - "3307:3306"
+      - 3307:3306
 
 networks:
   mysql:
