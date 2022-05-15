@@ -2,16 +2,63 @@ version: '3.1'
 
 services:
   alesar_db:
-    container_name: contactsinfo
+    container_name: customerCheck
     image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: oracle
-      MYSQL_USER: root
+      MYSQL_USER: user
       MYSQL_PASSWORD: oracle
-      MYSQL_DATABASE: alesar.contactsinfo
+      MYSQL_DATABASE: contactsinfo
     ports:
-      - 3307:3306
+      - 5050:3306
+
+  alesar_dtb:
+    container_name: fraud
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: oracle
+      MYSQL_USER: username
+      MYSQL_PASSWORD: oracle
+      MYSQL_DATABASE: fraud
+    ports:
+      - 5005:3306
+
+
+  storage:
+    image: openzipkin/zipkin-mysql
+    container_name: mysql
+    # Uncomment to expose the storage port for testing
+    ports:
+       - 3309:3310
+
+  # The zipkin process services the UI, and also exposes a POST endpoint that
+  # instrumentation can send trace data to. Scribe is disabled by default.
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mysql
+      # Point the zipkin at the storage backend
+      - MYSQL_HOST=mysql
+      # Uncomment to enable scribe
+      - SCRIBE_ENABLED=true
+      # Uncomment to enable self-tracing
+      - SELF_TRACING_ENABLED=true
+      # Uncomment to enable debug logging
+      - JAVA_OPTS=-Dlogging.level.zipkin2=DEBUG
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+      # Uncomment if you set SCRIBE_ENABLED=true
+      - 9410:9410
+    depends_on:
+      - storage
+
 
 networks:
   mysql:
@@ -19,3 +66,5 @@ networks:
 
 volumes:
   mysql:
+
+

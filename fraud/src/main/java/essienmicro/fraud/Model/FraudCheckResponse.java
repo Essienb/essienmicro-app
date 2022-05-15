@@ -1,2 +1,6 @@
-package essienmicro.fraud.Model;public record FraudCheckResponse() {
+package essienmicro.fraud.Model;
+
+
+public record FraudCheckResponse(Boolean isFraudster) {
+
 }
